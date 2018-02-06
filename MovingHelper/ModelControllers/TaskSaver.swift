@@ -21,34 +21,31 @@ public struct TaskSaver {
   :param: The file name to use when writing out the file.
   */
   static func writeTasksToFile(tasks: [Task], fileName: FileName) {
-    let dictionaries = map(tasks) {
+    let dictionaries = tasks.map {
       task in
       return task.asJson()
     }
     
-    var error: NSError?
     let fullFilePath = fileName.jsonFileName().pathInDocumentsDirectory()
-    if let jsonData = NSJSONSerialization.dataWithJSONObject(dictionaries,
-      options: .PrettyPrinted,
-      error: &error) {
+    do {
+        let jsonData = try NSJSONSerialization.dataWithJSONObject(dictionaries,
+                                                    options: .PrettyPrinted)
         jsonData.writeToFile(fullFilePath, atomically: true)
-    }
     
-    if let foundError = error {
-      NSLog("Error writing tasks to file: \(foundError.localizedDescription)")
+    } catch let error as NSError{
+      NSLog("Error writing tasks to file: \(error.localizedDescription)")
     }
   }
   
   public static func nukeTaskFile(fileName: FileName) {
     let fullFilePath = fileName.jsonFileName().pathInDocumentsDirectory()
-    var error: NSError?
     
-    NSFileManager.defaultManager()
-      .removeItemAtPath(fullFilePath, error: &error)
-    
-    if let foundError = error {
-      if foundError.code != NSFileNoSuchFileError {
-        NSLog("Error deleting file: \(foundError.localizedDescription)")
+    do {
+        try NSFileManager.defaultManager()
+            .removeItemAtPath(fullFilePath)
+    }catch let error as NSError{
+      if error.code != NSFileNoSuchFileError {
+        NSLog("Error deleting file: \(error.localizedDescription)")
       } //Otherwise the file cannot be deleted because it doesn't exist yet.
     }
   }
