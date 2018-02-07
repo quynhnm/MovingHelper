@@ -20,12 +20,17 @@ extension String {
   */
   func pathInDocumentsDirectory() -> String {
     let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-    if let last = urls.last as? NSURL,
-      documentsDirectory = last.path {
+    if let last = urls.last,
+      let documentsDirectory = last.path {
         return documentsDirectory.stringByAppendingPathComponent(self)
     }
     
     //Fall-through
     return self
   }
+    
+    func stringByAppendingPathComponent(path: String) -> String {
+        let nsSt = self as NSString
+        return nsSt.stringByAppendingPathComponent(path)
+    }
 }

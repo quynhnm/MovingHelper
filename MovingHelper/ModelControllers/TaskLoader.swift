@@ -29,8 +29,8 @@ public struct TaskLoader {
   public static func loadStockTasks() -> [Task] {
     if let path = NSBundle.mainBundle()
       .pathForResource(FileName.StockTasks.rawValue, ofType: "json"),
-      data = NSData(contentsOfFile: path),
-      tasks = tasksFromData(data) {
+      let data = NSData(contentsOfFile: path),
+      let tasks = tasksFromData(data) {
         return tasks
     }
     
@@ -40,10 +40,14 @@ public struct TaskLoader {
   }
   
   private static func tasksFromData(data: NSData) -> [Task]? {
-    let error = NSErrorPointer()
-    if let arrayOfTaskDictionaries = NSJSONSerialization.JSONObjectWithData(data, options: nil, error: error) as? [NSDictionary] {
-      return Task.tasksFromArrayOfJSONDictionaries(arrayOfTaskDictionaries)
-    } else {
+    do {
+        if let arrayOfTaskDictionaries = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? [NSDictionary] {
+            return Task.tasksFromArrayOfJSONDictionaries(arrayOfTaskDictionaries)
+        } else {
+            return nil
+        }
+        
+    } catch let error as NSError {
       NSLog("Error loading data: " + error.debugDescription)
       return nil
     }

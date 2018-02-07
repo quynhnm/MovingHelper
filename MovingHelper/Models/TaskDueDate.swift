@@ -33,6 +33,7 @@ public enum TaskDueDate: String {
     default:
       assert(false, "Unexpected index for task due date: \(index)")
     }
+    return OneMonthBefore
   }
   
   func getIndex() -> Int {
@@ -92,16 +93,16 @@ public enum TaskDueDate: String {
       components.month = 1
     }
     
-    return NSCalendar.currentCalendar().dateByAddingComponents(components, toDate: moveDate, options: .allZeros)!
+    return NSCalendar.currentCalendar().dateByAddingComponents(components, toDate: moveDate, options: .WrapComponents)!
   }
   
   public func daysFromDueDate(moveDate: NSDate) -> String {
     let taskDueDate = dueDateForMoveDate(moveDate)
     
-    let components = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitDay,
+    let components = NSCalendar.currentCalendar().components(NSCalendarUnit.Day,
       fromDate: NSDate.startOfToday(),
       toDate: taskDueDate,
-      options: .allZeros)
+      options: .WrapComponents)
     
     let daysLeft = components.day
     if daysLeft >= 0 {
