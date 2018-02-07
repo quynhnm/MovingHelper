@@ -70,7 +70,7 @@ public class MasterViewController: UITableViewController {
     
     var tasksWithDifferentID = dueDateTasks.filter{ $0.taskID != task.taskID }
     tasksWithDifferentID.append(task)
-    tasksWithDifferentID.sort({ $0.taskID > $1.taskID })
+    tasksWithDifferentID.sortInPlace({ $0.taskID > $1.taskID })
     
     sections[index] = tasksWithDifferentID
     tableView.reloadData()
@@ -163,6 +163,7 @@ extension MasterViewController {
   
   override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(TaskTableViewCell.cellIdentifierFromClassName(), forIndexPath: indexPath) as! TaskTableViewCell
+    cell.delegate = self
     let task = taskForIndexPath(indexPath)
     cell.configureForTask(task)
     
