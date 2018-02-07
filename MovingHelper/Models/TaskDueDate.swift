@@ -33,6 +33,7 @@ public enum TaskDueDate: String {
     default:
       assert(false, "Unexpected index for task due date: \(index)")
     }
+    return OneMonthBefore
   }
   
   func getIndex() -> Int {
